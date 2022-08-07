@@ -37,10 +37,76 @@ class ModelValidator():
                             'MAPE': mape,
                             'RMSE': rmse}, index=[0])
 
-    def kfolds_cross_val(self, y_scaler,
-                         cv: int, verbose: bool = False, 
-                         test_size: float = 0.2, **kwargs):
-        '''Kfolds Cross-Validation for validate with a reality simulation the models' performance'''
+    def classification_metrics(self, X: pd.DataFrame, y: pd.Series, 
+                            threshold: float, **kwargs):
+        '''Calculate metrics for evalueting classification models'''
+
+        prob = pd.DataFrame(self.model.predict_proba(X))[1]
+        yhat = prob.apply(lambda x: 1 if x >= threshold else 0)
+
+        accuracy = m.accuracy_score(y, yhat)
+        kappa = m.cohen_kappa_score(y, yhat)
+        auc_roc = m.roc_auc_score(y, prob)
+        precision = m.precision_score(y, yhat)
+        recall = m.recall_score(y, yhat)
+        f1_sc = m.f1_score(y, yhat)
+        
+        return pd.DataFrame([{'Model Name': self.model_name,
+                            'Accuracy': accuracy,
+                            'Auc-Roc': auc_roc,
+                            'Kappa Score': kappa,
+                            'Precision Score': precision,
+                            'Recall Score': recall,
+                            'F1-Score': f1_sc}])
+
+    def kfolds_cross_val_class(self, cv: int,
+                            threshold: float,
+                            verbose: bool = False, 
+                            test_size: float = 0.2, 
+                            **kwargs):
+        '''Kfolds Cross-Validation for validate with a reality simulation 
+        the models' performance'''
+
+        accuracy_list = []
+        aucroc_list = []
+        kappa_list = []
+        precision_list = []
+        recall_list = []
+        f1_list = []
+
+        for k in range(cv):
+            if verbose:
+                print( '\nKFold Number: {}'.format( k ) )
+
+            X_train, X_val, y_train, y_val = train_test_split(self.X, self.y, test_size=test_size)
+
+            self.model.fit(X_train, y_train) 
+            m_result = self.classification_metrics(X=X_val, y=y_val, threshold=threshold)
+
+            # store performance of each kfold iteration
+            accuracy_list.append(m_result['Accuracy'])
+            aucroc_list.append(m_result['Auc-Roc'])
+            kappa_list.append(m_result['Kappa Score'])
+            precision_list.append(m_result['Precision Score'])
+            recall_list.append(m_result['Recall Score'])
+            f1_list.append(m_result['F1-Score'])
+
+        return pd.DataFrame({
+                            'Model Name': self.model_name,
+                            'Accuracy CV': np.mean(accuracy_list),
+                            'AUC-ROC CV': np.mean(aucroc_list),
+                            'Kappa CV': np.mean(kappa_list),
+                            'Precision CV': np.mean(precision_list),
+                            'Recall CV': np.mean(recall_list),
+                            'F1-Score CV': np.mean(f1_list)
+                            }, index=[0])
+
+    def kfolds_cross_val_reg(self, y_scaler,
+                            col_orig_name: str, y_nt: str,
+                            cv: int, verbose: bool = False, 
+                            test_size: float = 0.2, **kwargs):
+        '''Kfolds Cross-Validation for validate with a reality simulation 
+        the models' performance'''
 
         mae_list = []
         mape_list = []
@@ -56,8 +122,8 @@ class ModelValidator():
             yhat = self.model.predict(X_val)
 
             data_trans = DataTransformer(df=X_train)
-            y_df = data_trans.reverse_concat_y(scaler=y_scaler, col_orig_name='leads', y_nt='log1p_leads', y_val=y_val, yhat=yhat)
-            m_result = self.regression_metrics(y_df)
+            y_df = data_trans.reverse_concat_y(scaler=y_scaler, col_orig_name=col_orig_name, y_nt=y_nt, y_val=y_val, yhat=yhat)
+            m_result = self.regression_metrics(y_df.round())
 
             # store performance of each kfold iteration
             mae_list.append(m_result['MAE'])

@@ -8,7 +8,6 @@ tests/test_data/url.txt
 data/
 reports/
 
-
 # C extensions
 *.so
 
