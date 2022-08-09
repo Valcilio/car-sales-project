@@ -39,6 +39,12 @@ class Context():
         PROJ_DIR = self.set_proj_path()
         return PROJ_DIR / 'logs'
 
+    def reports_fld(self, **kwargs):
+        '''Create variable with reports path'''
+
+        PROJ_DIR = self.set_proj_path()
+        return PROJ_DIR / 'reports'
+
     def data_proc_fld(self, **kwargs):
         '''Create variable with PROC_FLD path'''
 
@@ -50,3 +56,15 @@ class Context():
 
         PROJ_DIR = self.set_proj_path()
         return PROJ_DIR / 'data/raw'
+
+    def models_fld(self, **kwargs):
+        '''Create variable with RAW_FLD path'''
+
+        PROJ_DIR = self.set_proj_path()
+        return PROJ_DIR / 'models'
+
+    def scalers_fld(self, **kwargs):
+        '''Create variable with SCALERS path'''
+
+        PROJ_DIR = self.set_proj_path()
+        return PROJ_DIR / 'scalers'

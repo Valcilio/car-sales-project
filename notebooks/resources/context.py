@@ -62,3 +62,9 @@ class Context():
 
         PROJ_DIR = self.set_proj_path()
         return PROJ_DIR / 'models'
+
+    def scalers_fld(self, **kwargs):
+        '''Create variable with SCALERS path'''
+
+        PROJ_DIR = self.set_proj_path()
+        return PROJ_DIR / 'scalers'
