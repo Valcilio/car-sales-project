@@ -32,7 +32,7 @@ jobs:
         gcloud builds submit \
           --project "$PROJECT_ID" \
           --quiet \
-          --_config cloudbuild.yaml \
+          --config cloudbuild.yaml \
 
     # Deploy image to Cloud Run
     - name: Deploy
