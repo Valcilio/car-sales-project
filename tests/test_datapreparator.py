@@ -9,18 +9,9 @@ from domain.connectors.datapreparator import DataPreparator
 def load_data():
     '''Load data for testing'''
 
-    return {
-            'cod_anuncio':41919,
-            'cliques_telefone*':9,
-            'flg_unico_dono':1,
-            'flg_ipva_pago':1.0,
-            'flg_aceita_troca':0,
-            'views':60,
-            'cod_tipo_pessoa':2,
-            'prioridade':3,
-            'flg_blindado':0,
-            'flg_todas_revisoes_agenda_veiculo':0
-            }
+    df_json = pd.read_csv('tests/test_data/test_df.csv').to_json()
+
+    return {'data': df_json}
 
 @pytest.fixture
 def model_features():

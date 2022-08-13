@@ -1,0 +1,14 @@
+Improvements in API for do more than one predict for requisition.
+
+Warning:
+    - No warnings.
+
+Additioned:
+    - No additions.
+
+Revised:
+    - main.py: adapted to use np.where than condition if for return NA values where is not predicted to having leads.
+    - domain/connectors/datapreparator.py: modified for structure a dataframe in json back to dataframe.
+    - tests/test_datapreparator.py: adapted load_data fixture to get data in the new format for testings.
+    - tests/test_modelsrunner.py: adapted load_data fixture to get data in the new format for testings.
+    - tests/api_tester.ipynb: adapted to load df_test for send in API.

@@ -29,18 +29,9 @@ class DataPreparator():
     def _structure_json(self):
         '''Structure JSON for prediction'''
 
-        self.df_pred = pd.DataFrame()
-        self.df_pred.loc[0, 'cod_anuncio'] = self.json_df['cod_anuncio']
-        self.df_pred.loc[0, 'cliques_telefone*'] = self.json_df['cliques_telefone*']
-        self.df_pred.loc[0, 'flg_unico_dono'] = self.json_df['flg_unico_dono']
-        self.df_pred.loc[0, 'flg_ipva_pago'] = self.json_df['flg_ipva_pago']
-        self.df_pred.loc[0, 'flg_aceita_troca'] = self.json_df['flg_aceita_troca']
-        self.df_pred.loc[0, 'views'] = self.json_df['views']
-        self.df_pred.loc[0, 'cod_tipo_pessoa'] = self.json_df['cod_tipo_pessoa']
-        self.df_pred.loc[0, 'prioridade'] = self.json_df['prioridade']
-        self.df_pred.loc[0, 'flg_blindado'] = self.json_df['flg_blindado']
-        self.df_pred.loc[0, 'flg_todas_revisoes_agenda_veiculo'] = self.json_df['flg_todas_revisoes_agenda_veiculo']
-
+        json_df = self.json_df['data']
+        self.df_pred = pd.read_json(json_df)
+        
     def _run_feature_derivator(self):
         '''Derivate the ipva_dono and best_offer variables'''
 

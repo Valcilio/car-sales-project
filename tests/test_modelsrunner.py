@@ -1,4 +1,4 @@
-import joblib
+import pandas as pd
 import pytest
 
 from domain.connectors.datapreparator import DataPreparator
@@ -8,7 +8,9 @@ from domain.connectors.modelsrunner import ModelsRunner
 def load_data():
     '''Load data for testing'''
 
-    return joblib.load(open('tests/test_data/dict_test.pkl', 'rb'))
+    df_json = pd.read_csv('tests/test_data/test_df.csv').to_json()
+
+    return {'data': df_json}
 
 @pytest.fixture
 def model_return_dtype_reg():
